@@ -5,12 +5,15 @@ from telegram import Update, Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, Dispatcher
 from flask import Flask, request
 
-# Get the bot token from the environment variable
+# Get the bot token and app URL from the environment variables
 BOT_TOKEN = os.getenv('BOT_TOKEN')
-APP_URL = os.getenv(https://superdow-vpgr.onrender.com)  # The URL of your deployed app (e.g., https://your-app.onrender.com)
+APP_URL = os.getenv('APP_URL')  # The URL of your deployed app (e.g., https://your-app.onrender.com)
 
 if not BOT_TOKEN:
     raise ValueError("No BOT_TOKEN provided. Set the BOT_TOKEN environment variable.")
+
+if not APP_URL:
+    raise ValueError("No APP_URL provided. Set the APP_URL environment variable.")
 
 app = Flask(__name__)
 
