@@ -1,3 +1,3 @@
 #!/bin/bash
-python importos.py
+gunicorn --bind 0.0.0.0:8443 importos.py
 
