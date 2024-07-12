@@ -1,14 +1,18 @@
 import os
 import requests
 from bs4 import BeautifulSoup
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram import Update, Bot
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, Dispatcher
+from flask import Flask, request
 
 # Get the bot token from the environment variable
 BOT_TOKEN = os.getenv('BOT_TOKEN')
+APP_URL = os.getenv(https://superdow-vpgr.onrender.com)  # The URL of your deployed app (e.g., https://your-app.onrender.com)
 
 if not BOT_TOKEN:
     raise ValueError("No BOT_TOKEN provided. Set the BOT_TOKEN environment variable.")
+
+app = Flask(__name__)
 
 def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text('Hi! Send me a link to a web page and I will find and download all videos for you.')
@@ -67,16 +71,23 @@ def handle_message(update: Update, context: CallbackContext) -> None:
     else:
         update.message.reply_text('Please send a valid URL.')
 
+@app.route(f"/{BOT_TOKEN}", methods=['POST'])
+def webhook():
+    update = Update.de_json(request.get_json(force=True), bot)
+    dispatcher.process_update(update)
+    return "ok"
+
 def main() -> None:
-    updater = Updater(BOT_TOKEN)
-    dispatcher = updater.dispatcher
+    global bot, dispatcher
+    bot = Bot(token=BOT_TOKEN)
+    dispatcher = Dispatcher(bot, None, workers=0)
 
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
 
-    updater.start_polling()
-    updater.idle()
+    bot.set_webhook(f"{APP_URL}/{BOT_TOKEN}")
 
 if __name__ == '__main__':
     main()
+    app.run(host='0.0.0.0', port=8443)
 
