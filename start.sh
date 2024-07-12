@@ -1,4 +1,3 @@
 #!/bin/bash
-python import os.py.py
-
+python import os.py
 
