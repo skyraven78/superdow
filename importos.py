@@ -26,8 +26,25 @@ def download_mp4(url: str, file_name: str) -> str:
 def find_video_links(page_url: str) -> list:
     response = requests.get(page_url)
     soup = BeautifulSoup(response.content, 'html.parser')
-    video_tags = soup.find_all('video')
-    video_links = [video_tag['src'] for video_tag in video_tags if 'src' in video_tag.attrs]
+
+    video_links = []
+
+    # Find videos in <video> tags
+    for video_tag in soup.find_all('video'):
+        if 'src' in video_tag.attrs:
+            video_links.append(video_tag['src'])
+        for source_tag in video_tag.find_all('source'):
+            if 'src' in source_tag.attrs:
+                video_links.append(source_tag['src'])
+
+    # Find videos in <iframe> tags
+    for iframe_tag in soup.find_all('iframe'):
+        if 'src' in iframe_tag.attrs:
+            video_links.append(iframe_tag['src'])
+
+    # Deduplicate links
+    video_links = list(set(video_links))
+
     return video_links
 
 def handle_message(update: Update, context: CallbackContext) -> None:
@@ -62,3 +79,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
