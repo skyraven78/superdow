@@ -1,3 +1,3 @@
 #!/bin/bash
-python import os.py
+python importos.py
 
