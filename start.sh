@@ -1,4 +1,4 @@
 #!/bin/bash
-python your_script.py
+python import os.py.py
 
 
